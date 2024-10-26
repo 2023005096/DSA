@@ -1,67 +1,70 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 100 
-typedef struct
-{
-    int top;
-    int items[MAX];
-} Stack;
+#define MAX 100
 
-void initStack(Stack *s)
-{
-    s->top = -1;
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+void initializeStack(struct Node** top) {
+    *top = NULL;
 }
 
-int isStackEmpty(Stack *s)
-{
-    return s->top == -1;
+int isStackEmpty(struct Node* top) {
+    return top == NULL;
 }
 
-void push(Stack *s, int value)
-{
-    if (s->top < MAX - 1)
-        s->items[++(s->top)] = value;
+void push(struct Node** top, int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (!newNode) {
+        printf("Memory allocation failed!\n");
+        return;
+    }
+    newNode->data = value;
+    newNode->next = *top;
+    *top = newNode;
 }
 
-int pop(Stack *s)
-{
-    if (!isStackEmpty(s))
-        return s->items[(s->top)--];
-    return -1;
+void pop(struct Node** top, int* value) {
+    if (isStackEmpty(*top)) {
+        printf("Stack is empty!\n");
+        *value = -1;  
+        return;
+    }
+    struct Node* temp = *top;
+    *value = temp->data;
+    *top = (*top)->next;  
+    free(temp);
 }
 
-void dfs(int graph[][MAX], int n, int start)
-{
+void dfs(int graph[][MAX], int n, int start) {
     int visited[MAX] = {0}; 
-    Stack stack;
-    initStack(&stack);
+    struct Node* stack = NULL;
 
-    push(&stack, start);
+    push(&stack, start); 
 
-    while (!isStackEmpty(&stack))
-    {
-        int node = pop(&stack);
+    while (!isStackEmpty(stack)) {
+        int node;
+        pop(&stack, &node);  
 
-        if (!visited[node])
-        {
+        if (!visited[node]) {
             printf("%d ", node);
             visited[node] = 1;
         }
 
-        for (int i = n - 1; i >= 0; i--)
-        { 
-            if (graph[node][i] && !visited[i])
-            {
+        for (int i = n - 1; i >= 0; i--) {
+            if (graph[node][i] && !visited[i]) {
                 push(&stack, i);
             }
         }
     }
 }
 
-int main()
-{
-    int n = 6;
+int main() {
+    int n = 6;  
+
     int graph[MAX][MAX] = {
         {0, 1, 1, 0, 0, 0},
         {0, 0, 0, 1, 1, 0},
@@ -71,6 +74,7 @@ int main()
         {0, 0, 0, 0, 0, 0}};
 
     printf("DFS Traversal:\n");
-    dfs(graph, n, 0); 
+    dfs(graph, n, 0);
+
     return 0;
 }
