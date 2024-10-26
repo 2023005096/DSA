@@ -3,25 +3,26 @@
 
 #define MAX 100
 
-typedef struct Node {
+struct Node {
     int data;
-    struct Node *next;
-} Node;
+    struct Node* next;
+};
 
-typedef struct {
-    Node *front, *rear;
-} Queue;
+struct Queue {
+    struct Node* front;
+    struct Node* rear;
+};
 
-void initQueue(Queue *q) {
+void initializeQueue(struct Queue* q) {
     q->front = q->rear = NULL;
 }
 
-int isQueueEmpty(Queue *q) {
+int isQueueEmpty(struct Queue* q) {
     return q->front == NULL;
 }
 
-void enqueue(Queue *q, int value) {
-    Node *newNode = (Node *)malloc(sizeof(Node));
+void enqueue(struct Queue* q, int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
     if (!newNode) {
         printf("Memory allocation failed!\n");
         return;
@@ -29,53 +30,54 @@ void enqueue(Queue *q, int value) {
     newNode->data = value;
     newNode->next = NULL;
 
-    if (isQueueEmpty(q)) {
-        q->front = q->rear = newNode;
-    } else {
+    if (q->rear) {
         q->rear->next = newNode;
-        q->rear = newNode;
+    } else {
+        q->front = newNode; 
     }
+    q->rear = newNode; 
 }
 
-int dequeue(Queue *q) {
+void dequeue(struct Queue* q, int* value) {
     if (isQueueEmpty(q)) {
         printf("Queue is empty!\n");
-        return -1;
+        *value = -1;
+        return;
     }
-    Node *temp = q->front;
-    int value = temp->data;
+    struct Node* temp = q->front;
+    *value = temp->data;
     q->front = q->front->next;
 
-    if (q->front == NULL)
-        q->rear = NULL;
-
+    if (!q->front) {
+        q->rear = NULL; 
+    }
     free(temp);
-    return value;
 }
 
 void bfs(int graph[][MAX], int n, int start) {
-    int visited[MAX] = {0}; 
-    Queue queue;
-    initQueue(&queue);
+    int visited[MAX] = {0};  
+    struct Queue queue;     
+    initializeQueue(&queue);      
 
-    enqueue(&queue, start);
-    visited[start] = 1;
+    enqueue(&queue, start); 
+    visited[start] = 1;   
 
     while (!isQueueEmpty(&queue)) {
-        int node = dequeue(&queue);
+        int node;
+        dequeue(&queue, &node); 
         printf("%d ", node);
 
         for (int i = 0; i < n; i++) {
             if (graph[node][i] && !visited[i]) {
                 enqueue(&queue, i);
-                visited[i] = 1;
+                visited[i] = 1; 
             }
         }
     }
 }
 
 int main() {
-    int n = 6;  
+    int n = 6;
 
     int graph[MAX][MAX] = {
         {0, 1, 1, 0, 0, 0},
@@ -86,7 +88,7 @@ int main() {
         {0, 0, 0, 0, 0, 0}};
 
     printf("BFS Traversal:\n");
-    bfs(graph, n, 0);
+    bfs(graph, n, 0);  
 
     return 0;
 }
