@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 100 // Maximum number of nodes
+#define MAX 100
 
 typedef struct
 {
@@ -34,7 +34,7 @@ int dequeue(Queue *q)
     if (!isQueueEmpty(q))
     {
         int value = q->items[q->front];
-        if (q->front == q->rear) // Queue becomes empty
+        if (q->front == q->rear)
             q->front = q->rear = -1;
         else
             q->front++;
@@ -45,7 +45,7 @@ int dequeue(Queue *q)
 
 void bfs(int graph[][MAX], int n, int start)
 {
-    int visited[MAX] = {0}; // To keep track of visited nodes
+    int visited[MAX] = {0};
     Queue queue;
     initQueue(&queue);
 
@@ -58,7 +58,7 @@ void bfs(int graph[][MAX], int n, int start)
         printf("%d ", node);
 
         for (int i = 0; i < n; i++)
-        { // Add unvisited neighbors to the queue
+        { 
             if (graph[node][i] && !visited[i])
             {
                 enqueue(&queue, i);
@@ -70,7 +70,7 @@ void bfs(int graph[][MAX], int n, int start)
 
 int main()
 {
-    int n = 6; // Number of nodes
+    int n = 6;
     int graph[MAX][MAX] = {
         {0, 1, 1, 0, 0, 0},
         {0, 0, 0, 1, 1, 0},
@@ -80,6 +80,6 @@ int main()
         {0, 0, 0, 0, 0, 0}};
 
     printf("BFS Traversal:\n");
-    bfs(graph, n, 0); // Start BFS from node 0
+    bfs(graph, n, 0);
     return 0;
 }
