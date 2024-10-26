@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 100 // Maximum number of nodes
-
+#define MAX 100 
 typedef struct
 {
     int top;
@@ -34,7 +33,7 @@ int pop(Stack *s)
 
 void dfs(int graph[][MAX], int n, int start)
 {
-    int visited[MAX] = {0}; // To keep track of visited nodes
+    int visited[MAX] = {0}; 
     Stack stack;
     initStack(&stack);
 
@@ -51,7 +50,7 @@ void dfs(int graph[][MAX], int n, int start)
         }
 
         for (int i = n - 1; i >= 0; i--)
-        { // Add unvisited neighbors to the stack
+        { 
             if (graph[node][i] && !visited[i])
             {
                 push(&stack, i);
@@ -62,7 +61,7 @@ void dfs(int graph[][MAX], int n, int start)
 
 int main()
 {
-    int n = 6; // Number of nodes
+    int n = 6;
     int graph[MAX][MAX] = {
         {0, 1, 1, 0, 0, 0},
         {0, 0, 0, 1, 1, 0},
@@ -72,6 +71,6 @@ int main()
         {0, 0, 0, 0, 0, 0}};
 
     printf("DFS Traversal:\n");
-    dfs(graph, n, 0); // Start DFS from node 0
+    dfs(graph, n, 0); 
     return 0;
 }
