@@ -3,92 +3,65 @@
 
 #define MAX 100
 
-struct Node {
-    int data;
-    struct Node* next;
-};
+int visited[MAX];
+int adj[MAX][MAX];
+int queue[MAX];
+int front = -1, rear = -1;
 
-struct Queue {
-    struct Node* front;
-    struct Node* rear;
-};
-
-void initializeQueue(struct Queue* q) {
-    q->front = q->rear = NULL;
+void enqueue(int v) {
+    if (rear == MAX - 1) return;
+    if (front == -1) front = 0;
+    queue[++rear] = v;
 }
 
-int isQueueEmpty(struct Queue* q) {
-    return q->front == NULL;
+int dequeue() {
+    if (front == -1 || front > rear) return -1;
+    return queue[front++];
 }
 
-void enqueue(struct Queue* q, int value) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if (!newNode) {
-        printf("Memory allocation failed!\n");
-        return;
+void BFS(int n, int start) {
+    int u, w;
+    
+    for (u = 0; u < n; u++) {
+        visited[u] = 0;
     }
-    newNode->data = value;
-    newNode->next = NULL;
 
-    if (q->rear) {
-        q->rear->next = newNode;
-    } else {
-        q->front = newNode; 
-    }
-    q->rear = newNode; 
-}
-
-void dequeue(struct Queue* q, int* value) {
-    if (isQueueEmpty(q)) {
-        printf("Queue is empty!\n");
-        *value = -1;
-        return;
-    }
-    struct Node* temp = q->front;
-    *value = temp->data;
-    q->front = q->front->next;
-
-    if (!q->front) {
-        q->rear = NULL; 
-    }
-    free(temp);
-}
-
-void bfs(int graph[][MAX], int n, int start) {
-    int visited[MAX] = {0};  
-    struct Queue queue;     
-    initializeQueue(&queue);      
-
-    enqueue(&queue, start); 
-    visited[start] = 1;   
-
-    while (!isQueueEmpty(&queue)) {
-        int node;
-        dequeue(&queue, &node); 
-        printf("%d ", node);
-
-        for (int i = 0; i < n; i++) {
-            if (graph[node][i] && !visited[i]) {
-                enqueue(&queue, i);
-                visited[i] = 1; 
+    enqueue(start);
+    visited[start] = 1;
+    
+    while (front <= rear) {
+        u = dequeue();
+        printf("%d ", u);
+        
+        for (w = 0; w < n; w++) {
+            if (adj[u][w] == 1 && !visited[w]) {
+                enqueue(w);
+                visited[w] = 1;
             }
         }
     }
 }
 
 int main() {
-    int n = 6;
+    int n = 5;
+    int start = 0;
 
-    int graph[MAX][MAX] = {
-        {0, 1, 1, 0, 0, 0},
-        {0, 0, 0, 1, 1, 0},
-        {0, 0, 0, 0, 0, 1},
-        {0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 1},
-        {0, 0, 0, 0, 0, 0}};
+    int edges[5][5] = {
+        {0, 1, 0, 1, 0},
+        {1, 0, 1, 1, 1},
+        {0, 1, 0, 0, 0},
+        {1, 1, 0, 0, 1},
+        {0, 1, 0, 1, 0}
+    };
 
-    printf("BFS Traversal:\n");
-    bfs(graph, n, 0);  
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            adj[i][j] = edges[i][j];
+        }
+    }
 
+    printf("BFS Traversal: ");
+    BFS(n, start);
+    
     return 0;
 }
