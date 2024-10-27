@@ -8,46 +8,53 @@ struct Node {
     struct Node* next;
 };
 
-void initializeStack(struct Node** top) {
-    *top = NULL;
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (!newNode) {
+        printf("Memory allocation failed!\n");
+        exit(EXIT_FAILURE); 
+    }
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
 }
 
 int isStackEmpty(struct Node* top) {
     return top == NULL;
 }
 
-void push(struct Node** top, int value) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if (!newNode) {
-        printf("Memory allocation failed!\n");
-        return;
-    }
-    newNode->data = value;
-    newNode->next = *top;
-    *top = newNode;
+// Push a value onto the stack
+struct Node* push(struct Node* top, int value) {
+    struct Node* newNode = createNode(value);
+    newNode->next = top;
+    return newNode;  
 }
 
-void pop(struct Node** top, int* value) {
-    if (isStackEmpty(*top)) {
+struct Node* pop(struct Node* top, int* value) {
+    if (isStackEmpty(top)) {
         printf("Stack is empty!\n");
         *value = -1;  
-        return;
+        return top;   
     }
-    struct Node* temp = *top;
+    struct Node* temp = top;
     *value = temp->data;
-    *top = (*top)->next;  
+    top = top->next;  
     free(temp);
+    return top; 
 }
 
 void dfs(int graph[][MAX], int n, int start) {
     int visited[MAX] = {0}; 
     struct Node* stack = NULL;
 
-    push(&stack, start); 
+    stack = push(stack, start); 
 
     while (!isStackEmpty(stack)) {
         int node;
-        pop(&stack, &node);  
+        stack = pop(stack, &node);  
+
+        if (node == -1) 
+            continue;
 
         if (!visited[node]) {
             printf("%d ", node);
@@ -56,11 +63,12 @@ void dfs(int graph[][MAX], int n, int start) {
 
         for (int i = n - 1; i >= 0; i--) {
             if (graph[node][i] && !visited[i]) {
-                push(&stack, i);
+                stack = push(stack, i);  
             }
         }
     }
 }
+
 
 int main() {
     int n = 6;  
