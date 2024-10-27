@@ -6,7 +6,6 @@ struct node {
   struct node *left, *right;
 };
 
-// Create a node
 struct node *newNode(int item) {
   struct node *temp = (struct node *)malloc(sizeof(struct node));
   temp->data = item;
@@ -16,19 +15,18 @@ struct node *newNode(int item) {
 
 int searchBST(struct node* root, int value) {
     if (root == NULL) {
-        return 0; // Value not found
+        return 0; 
     }
     if (root->data == value) {
-        return 1; // Value found
+        return 1;
     }
     if (value < root->data) {
-        return searchBST(root->left, value); // Search in the left subtree
+        return searchBST(root->left, value);
     } else {
-        return searchBST(root->right, value); // Search in the right subtree
+        return searchBST(root->right, value); 
     }
 }
 
-// Inorder Traversal
 void inorder(struct node *root) {
   if (root != NULL) {
     inorder(root->left);
@@ -36,11 +34,9 @@ void inorder(struct node *root) {
     inorder(root->right);
   }
 }
-
-// Insert a node
 struct node *insert(struct node *node, int key) {
-  if (node == NULL) return newNode(key); // Return a new node if the tree is empty
-  if (key < node->data)	// Traverse to the correct place and insert the node
+  if (node == NULL) return newNode(key);
+  if (key < node->data)	
     node->left = insert(node->left, key);
   else if (key > node->data)
     node->right = insert(node->right, key);
