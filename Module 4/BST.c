@@ -13,6 +13,15 @@ struct node *newNode(int item) {
   return temp;
 }
 
+struct node *insert(struct node *node, int key) {
+  if (node == NULL) return newNode(key);
+  if (key < node->data)	
+    node->left = insert(node->left, key);
+  else if (key > node->data)
+    node->right = insert(node->right, key);
+  return node;
+}
+
 int searchBST(struct node* root, int value) {
     if (root == NULL) {
         return 0; 
@@ -33,15 +42,6 @@ void inorder(struct node *root) {
     printf("%d -> ", root->data);
     inorder(root->right);
   }
-}
-struct node *insert(struct node *node, int key) {
-  if (node == NULL) return newNode(key);
-  if (key < node->data)	
-    node->left = insert(node->left, key);
-  else if (key > node->data)
-    node->right = insert(node->right, key);
-
-  return node;
 }
 
 int main() {
